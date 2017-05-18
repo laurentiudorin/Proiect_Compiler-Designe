@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import FileReader.ReadFromFile;
+import Token.Token;
 
 public class Analizor_Lexical {
 	
 	private ArrayList<String> fileContent = new ArrayList<String>();
-//	private ArrayList<Tokens> token = new ArrayList<Token>();
+	private ArrayList<Token> token = new ArrayList<Token>();
 	
 	private String[] keywords = {"repeat", "while", "begine", "end"};
 	private ReadFromFile file = new ReadFromFile();
@@ -17,6 +18,8 @@ public class Analizor_Lexical {
 	private int position = 0;
 	private int vectorIndex = 0;
 	
+	
+	/*** Function that runs the Analyzer for every line of code ***/
 	public void LoadString() throws IOException{
 		fileContent = file.Read();
 		
@@ -38,14 +41,31 @@ public class Analizor_Lexical {
 	
 	
 	/*** Function that verify if the identifier is a keyword ***/
-	public boolean CheckKeyWord(String word){
+	public char CheckKeyWord(String word){
 		
 		for (int i=0; i < keywords.length; i++){
 			if (word.equals(keywords[i])){
-				return true;
+				switch(i){
+					case 0:
+						return 'r';
+					case 1:
+						return 'w';
+					case 2:
+						return 'b';
+					case 3:
+						return 'e';
+				}
 			}
 		}
-		return false;
+		return 'i';
+	}
+	
+	/*** Function that creates a token for a word ***/
+	public void CreateToken(char code, int line, int colum, String word){
+		Token t = new Token();
+		t.LoadData(code, line, colum, word);
+		t.PrintData();
+		token.add(t);
 	}
 	
 	
@@ -79,11 +99,14 @@ public class Analizor_Lexical {
 				}
 //				CheckKeyWord(str.substring(position - stringLength -1, position -1));
 				
-				//test
-				if (CheckKeyWord(content.substring(wordPosition, wordPosition + stringLength))){
-					System.out.println(content.substring(wordPosition, wordPosition + stringLength) + " este Cuvant Cheie" );
+				char wordType = CheckKeyWord(content.substring(wordPosition, wordPosition + stringLength));
+				
+				if (wordType == 'i'){
+					CreateToken('i', position, vectorIndex, content.substring(wordPosition, wordPosition + stringLength));
+//					System.out.println(content.substring(wordPosition, wordPosition + stringLength) + " este Cuvant Cheie" );
 				}else{
-					System.out.println(content.substring(wordPosition, wordPosition + stringLength) + " este Identificator" );
+					CreateToken(wordType, position, vectorIndex, content.substring(wordPosition, wordPosition + stringLength));
+//					System.out.println(content.substring(wordPosition, wordPosition + stringLength) + " este Identificator" );
 				}
 			}
 			
@@ -95,7 +118,8 @@ public class Analizor_Lexical {
 				if (Character.isLetter(ch) || Character.isDigit(ch)){
 					NextChar(content);
 					if(ch == '\''){
-						System.out.println(content.substring(wordPosition, wordPosition + 3) + " este cosntanta caracter" );
+						CreateToken('c', position, vectorIndex, content.substring(wordPosition, wordPosition + 3));
+//						System.out.println(content.substring(wordPosition, wordPosition + 3) + " este cosntanta caracter" );
 					}
 //					Varianta HARDE CORE !!!
 //					else if(ch == ' ' || position == str.length()){
@@ -126,6 +150,7 @@ public class Analizor_Lexical {
 					if(ch == '\'' || ch == '\"' || ch == '\\'){
 						NextChar(content);
 						if (ch == '\''){
+							CreateToken('c', position, vectorIndex, (content.substring(wordPosition, wordPosition + 4)));
 							System.out.println(content.substring(wordPosition, wordPosition + 4) + " este constanta caracter" );
 						}else{
 							while (ch != '\'' || ch != ' '){
@@ -148,7 +173,8 @@ public class Analizor_Lexical {
 						if (Character.isDigit(ch) || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')){
 							NextChar(content);
 							if(ch == ' '){
-								System.out.println("Am identificat caracterul " + content.substring(wordPosition, wordPosition + 4)+ " pe linia " + vectorIndex + " la pozitia " + (wordPosition + 1));
+								CreateToken('c', position, vectorIndex, (content.substring(wordPosition, wordPosition + 4)));
+//								System.out.println("Am identificat caracterul " + content.substring(wordPosition, wordPosition + 4)+ " pe linia " + vectorIndex + " la pozitia " + (wordPosition + 1));
 							}else if(Character.isLetter(ch) || Character.isDigit(ch)){
 								while(Character.isLetter(ch) || Character.isDigit(ch)){
 									NextChar(content);
@@ -158,7 +184,8 @@ public class Analizor_Lexical {
 										break;
 									}
 								}
-								System.out.println("Am identificat caracterul " + content.substring(wordPosition, wordPosition + stringLength+2)+ " pe linia " + vectorIndex + " la pozitia " + (wordPosition + 1));
+								CreateToken('c', position, vectorIndex, (content.substring(wordPosition, wordPosition + 2)));
+//								System.out.println("Am identificat caracterul " + content.substring(wordPosition, wordPosition + stringLength+2)+ " pe linia " + vectorIndex + " la pozitia " + (wordPosition + 1));
 							}
 						}else{
 							while(Character.isLetter(ch) || Character.isDigit(ch)){
@@ -197,18 +224,23 @@ public class Analizor_Lexical {
 			
 			/*** CARACTER SPECIAL [,] ***/
 			else if (ch == ','){
-				System.out.println("Am identificat caracterul special [,]");
+				wordPosition = position-1;
+				CreateToken('s', position, vectorIndex, (content.substring(wordPosition, wordPosition+1)));
+//				System.out.println("Am identificat caracterul special [,]");
 				NextChar(content);
 			}
 			
 			/*** CARACTER SPECIAL [.] / SECVENTA DE CARACTERE SPECIALE [..] ***/
 			else if (ch == '.'){
+				wordPosition = position-1;
 				NextChar(content);
 				if (ch == '.'){
-					System.out.println("Am identificat secventa [..]");
+					CreateToken('v', position, vectorIndex, (content.substring(wordPosition, wordPosition + 2)));
+//					System.out.println("Am identificat secventa [..]");
 					NextChar(content);
 				}else{
-					System.out.println("Am identificat secventa [.]");
+					CreateToken('s', position, vectorIndex, (content.substring(wordPosition, wordPosition + 1)));
+//					System.out.println("Am identificat secventa [.]");
 				}
 				
 				// AICI O SA APARA UN BUG ENORM 
@@ -220,7 +252,9 @@ public class Analizor_Lexical {
 				wordPosition = position-1;
 				NextChar(content);
 				if( ch == '='){
-					System.out.println(content.substring(wordPosition, wordPosition + 2) + " este Secventa de caractere" );
+					CreateToken('v', position, vectorIndex, (content.substring(wordPosition, wordPosition + 2)));
+//					System.out.println(content.substring(wordPosition, wordPosition + 2) + " este Secventa de caractere" );
+					NextChar(content);
 				}else{
 					System.out.println("Bad caracter");
 				}
