@@ -1,20 +1,28 @@
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Analizor.Analizor_Lexical;
+import Token.Token;
 
 public class Application_Startup {
 	public static void main(String[] args) {
-		
-		//ReadFile string = new ReadFile();
+		;
 		Analizor_Lexical lex = new Analizor_Lexical();
 		
-		//String str = string.Read();
 		try {
 			lex.LoadString();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		lex.Analize();
+		
+		ArrayList<Token> token = lex.getTokens();
+		String stringToAnalize = new String();
+		
+		for (int i = 0; i < token.size(); i++)
+		{
+			stringToAnalize += token.get(i).code;
+		}
+		
+		System.out.println(stringToAnalize);
 	}
 }

@@ -1,5 +1,4 @@
-int var 0grifin while 17fore for _int _0876 _0ceva 17fore
-0x10 0xfg 0x1f 0x11 0f101010 0x1fs 0x10
-<= ... , <=
-
-begine end for while
+begine
+	while variabila = ('a' + 'a') * 0x10
+	
+ end

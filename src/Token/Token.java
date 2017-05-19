@@ -1,12 +1,14 @@
 package Token;
 
 public class Token {
-	private char code;
+	public char code;
 	
 	private int line;
 	private int colum;
 	
 	private String word;
+	
+	String str;
 
 	public void LoadData(char code, int colum, int line, String word){
 		this.code = code;
@@ -16,6 +18,9 @@ public class Token {
 	}
 	
 	public void PrintData(){
-		System.out.println(word + " \t " + code + " \t " + line + " \t " + colum);
+		if (word.length() < 8)
+			System.out.println(word + "\t\t" + code + " \t " + line + "     " + colum);
+		else if(word.length() < 16)
+			System.out.println(word + "\t" + code + " \t " + line + "     " + colum);
 	}
 }
