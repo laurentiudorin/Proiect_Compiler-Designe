@@ -11,7 +11,7 @@ public class Analizor_Lexical {
 	private ArrayList<String> fileContent = new ArrayList<String>();
 	private ArrayList<Token> token = new ArrayList<Token>();
 	
-	private String[] keywords = {"repeat", "while", "begine", "end"};
+	private String[] keywords = {"begine", "end", "while", "do ", "repeat", "until", "for"};
 	private ReadFromFile file = new ReadFromFile();
 
 	private char ch;
@@ -47,13 +47,19 @@ public class Analizor_Lexical {
 			if (word.equals(keywords[i])){
 				switch(i){
 					case 0:
-						return 'r';
-					case 1:
-						return 'w';
-					case 2:
 						return 'b';
-					case 3:
+					case 1:
 						return 'e';
+					case 2:
+						return 'w';
+					case 3:
+						return 'd';
+					case 4:
+						return 'r';
+					case 5:
+						return 'u';
+					case 6:
+						return 'f';
 				}
 			}
 		}
@@ -96,14 +102,11 @@ public class Analizor_Lexical {
 					NextChar(content);
 					stringLength++;
 					if(position == content.length()){
-						stringLength++;
+							stringLength++;
 						break;
 					}
-				}
-//				CheckKeyWord(str.substring(position - stringLength -1, position -1));
-				
-				char wordType = CheckKeyWord(content.substring(wordPosition, wordPosition + stringLength));
-				
+				}				
+				char wordType = CheckKeyWord(content.substring(wordPosition, wordPosition + stringLength));				
 				if (wordType == 'i'){
 					CreateToken('i', wordPosition, vectorIndex, content.substring(wordPosition, wordPosition + stringLength));
 //					System.out.println(content.substring(wordPosition, wordPosition + stringLength) + " este Cuvant Cheie" );
