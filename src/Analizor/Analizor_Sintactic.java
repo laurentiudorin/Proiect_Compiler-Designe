@@ -87,7 +87,7 @@ public class Analizor_Sintactic {
 	public void expresie(){
 
 		termen();
-		while(ch == '+'){
+		while(ch == '+' || ch == '-' || ch == '*' || ch == '/'){
 			termen();
 		}
 	}

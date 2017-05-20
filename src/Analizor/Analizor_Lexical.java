@@ -178,7 +178,7 @@ public class Analizor_Lexical {
 						NextChar(content);
 						if (Character.isDigit(ch) || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F')){
 							NextChar(content);
-							if(ch == ' '){
+							if(ch == ' ' || ch ==';'){
 								CreateToken('c', wordPosition, vectorIndex, (content.substring(wordPosition, wordPosition + 4)));
 //								System.out.println("Am identificat caracterul " + content.substring(wordPosition, wordPosition + 4)+ " pe linia " + vectorIndex + " la pozitia " + (wordPosition + 1));
 							}else if(Character.isLetter(ch) || Character.isDigit(ch)){
@@ -244,6 +244,13 @@ public class Analizor_Lexical {
 				NextChar(content);
 			}
 			
+			/*** CARACTER SPECIAL [;] ***/
+			else if (ch == ';'){
+				wordPosition = position-1;
+				CreateToken(';', wordPosition, vectorIndex, (content.substring(wordPosition, wordPosition+1)));
+//				System.out.println("Am identificat caracterul special [,]");
+				NextChar(content);
+			}
 			
 			/*** CARACTER SPECIAL [,] ***/
 			else if (ch == ','){

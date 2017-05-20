@@ -1,5 +1,6 @@
 begine
 	while 'a' do 
-	variabila = ('a' + 'a') + 0x10
+	variabila = ('a' + 'a')*'a'/'a' - 0xff * ( 0x1f + 0x11 ) + 0x10
+	
 	
  end
